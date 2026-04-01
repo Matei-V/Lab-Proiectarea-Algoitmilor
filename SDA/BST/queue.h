@@ -1,8 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-
 typedef struct ElemQ {
-  int val;
+  void *val;
   struct ElemQ *next;
 } NodQ;
 
@@ -15,6 +12,6 @@ typedef struct {
 Queue* create_queue();
 void delete_queue(NodQ *front);
 int isEmptyQueue(Queue *q);
-void enqueue(Queue *q, int val);
+void enqueue(Queue *q, void *val);
 NodQ dequeue(Queue *q);
 

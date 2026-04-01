@@ -1,13 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct Elem {
+typedef struct ElemS {
     int val;
-    struct Elem *next;
+    struct ElemS *next;
 } NodS;
 
 typedef struct {
     NodS *top;
+    int size;
 } Stack;
 
 Stack* create_stack();

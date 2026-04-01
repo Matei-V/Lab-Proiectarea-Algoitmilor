@@ -7,12 +7,28 @@ void test_alocare(void *p) {
     }
 }
 
+Stack* create_stack(){
+    Stack *s = malloc(sizeof(Stack));
+    test_alocare(s);
+
+    s->top = NULL;
+    s->size = 0;
+    return s;
+}
+
+int isEmptyStack(Stack *s) {
+    if(s->top == NULL)
+        return 1;
+    return 0;
+}
+
+
 void push(Stack *s, int val){
     NodS *aux = malloc(sizeof(NodS));
     aux->val = val;
     aux->next=s->top;
     s->top = aux;
-    
+    s->size++;
 }
 
 NodS pop(Stack *s) {
@@ -29,7 +45,7 @@ NodS pop(Stack *s) {
 
     free(aux);
     aux=NULL;
-
+    s->size--;
     return ret;
 }
 
