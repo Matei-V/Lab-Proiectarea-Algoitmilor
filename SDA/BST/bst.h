@@ -17,8 +17,9 @@ NodBST* newNode(int val);
 NodBST* insert(NodBST* root, int key);
 NodBST* minValue(NodBST *root);
 NodBST* findKthElement(NodBST *root, int k);
+NodBST* search(NodBST *root, int key);
+NodBST* Predecesor(NodBST* nod, int k);
 
-void Preorder(NodBST *nod);
 void deleteByKey(BST tree, int key);
 
 int Height(NodBST *nod);

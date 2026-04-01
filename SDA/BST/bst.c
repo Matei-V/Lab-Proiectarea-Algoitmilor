@@ -1,20 +1,5 @@
 #include "bst.h"
-#include "queue.h"
 #include "general.h"
-
-
-NodBST* Create(int n) {
-  int val;
-  if(n > 0) {
-    NodBST* root= malloc(sizeof(NodBST));
-    printf("Valoare nod"); scanf("%d", &val);
-    (root->val)= val;
-    root->left = Create(n/2);
-    root->right = Create(n-1-n/2);
-    return root; 
-  }
-  return NULL;
-}
 
 
 NodBST* newNode(int val) {
@@ -30,6 +15,34 @@ NodBST* insert(NodBST* nod, int key) {
   if (key > nod->val) nod->right = insert(nod->right, key); 
 
   return nod; 
+}
+
+void freeNode(NodBST **nod) {
+  free(*nod);
+  *nod = NULL;
+}
+
+NodBST* deleteNod(NodBST* nod, int key) { 
+  if (nod == NULL) return nod;
+  if (key < nod->val) nod->left = deleteNod(nod->left, key);
+  else if (key > nod->val) nod->right = deleteNod(nod->right, key);
+  else {
+    if (nod->left == NULL) {
+      NodBST *current = nod;
+      nod=nod->right; 
+      freeNode(&current); 
+    return nod;
+    } else if (nod->right == NULL){
+      NodBST *current = nod;
+      nod=nod->left;
+      freeNode(&current);
+      return nod;
+    }
+    NodBST* current = minValue(nod->right);
+    nod->val = current->val;
+    nod->right = deleteNod(nod->right, current->val);
+  }
+  return nod;
 }
 
 int isEmptyBST(BST tree) {
@@ -85,65 +98,30 @@ NodBST* findKthElement(NodBST *nod, int k) {
   return NULL;
 }
 
-void Preorder(NodBST *nod) {
-  if(nod != NULL) {
-    printf("%d", nod->val);
-    Preorder(nod->left);
-    Preorder(nod->right);
-  }
+NodBST* search(NodBST *nod, int key) {
+  if(nod->val == key) 
+    return nod;
+  if(nod->val > key) return search(nod->left, key);
+  if(nod->val < key) return search(nod->right, key);
+  return NULL;
 }
 
-void freeNode(NodBST **nod) {
-  free(*nod);
-  *nod = NULL;
-}
-
-void deleteDeepest(BST tree, NodBST *d_nod) {
-  Queue *Q = create_queue();
-  NodBST *p = tree.root;
-  enqueue(Q, tree.root);
-
-  while (!isEmptyQueue(Q)) {
-    NodQ top = dequeue(Q);
-    NodBST *current = (NodBST*)top.val;
-
-   if(current->right != NULL) {
-      if(current->right == d_nod) {
-        current->right = NULL;
-        freeNode(&d_nod);
-        return;
+NodBST* Predecesor(NodBST* nod, int k) { 
+  NodBST* pred = NULL; 
+  while (nod != NULL) {
+    if (nod->val < k) { 
+      pred = nod; 
+      nod = nod->right; 
+    } else if (nod->val > k) { 
+      nod = nod->left; 
+    } else { 
+      if (nod->left != NULL) { 
+        return maxValue(nod->left);
       }
-    } else enqueue(Q, (void*)current->right);
-    if(current->left != NULL) {
-      if(current->left == d_nod) {
-        current->left = NULL;
-        freeNode(&d_nod);
-        return;
-      } else enqueue(Q, (void*)current->left);
+      break;
     }
   }
-}
-
-void deleteByKey(BST tree, int key) {
-  Queue *Q = create_queue();
-  enqueue(Q, tree.root);
-  NodBST *current, *key_nod;
-  while (!isEmptyQueue(Q)) {
-    NodQ top = dequeue(Q);
-    current = (NodBST*)top.val;
-    if(current->val == key) key_nod = current;
-    if(current->right != NULL)  enqueue(Q, current->right);
-    if(current->left != NULL)  enqueue(Q, current->left);
-  }
-  if(key_nod == NULL) return;
-
-  if(tree.root->val == key && tree.root->left == NULL && tree.root->right == NULL) {
-    freeNode(&tree.root);
-  } else {
-    int aux = current->val;
-    deleteDeepest(tree, current);
-    key_nod->val = aux;
-  }
+  return pred;
 }
 
 int Height(NodBST *nod) {
