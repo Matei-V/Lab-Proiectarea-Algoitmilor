@@ -19,6 +19,7 @@ NodTrie* newNode() {
 
 NodTrie* insert(NodTrie *nod, char *c) {
   if(*(c+1) == '\0') {
+    nod = newNode();
     nod->final = 1;
     return nod;
   }
@@ -32,4 +33,11 @@ NodTrie* insert(NodTrie *nod, char *c) {
   nod->next[*c - 'a'] = insert(nod->next[*c - 'a'], c + 1);
 
   return nod;
+}
+
+int Cautare(NodTrie *nod, char *c) {
+  if(*c == '\0') return 1;
+  if(nod->next[*c - 'a'] != NULL)
+    return Cautare(nod->next[*c - 'a'], c + 1);
+  return 0;
 }
